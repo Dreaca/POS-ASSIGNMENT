@@ -1,0 +1,37 @@
+$("#nav-home").on('click',()=>{
+    $("#home").css('display','block')
+    
+    $("#customer").css('','none')
+    $("#item").css('display','none')
+    $("#order-detail").css('display','none')
+    $("#order").css('display','none')
+})
+$("#nav-customer").on('click',()=>{
+    $("#customer").css('display','block')
+    $("#home").css('display','none')
+    $("#item").css('display','none')
+    $("#order-detail").css('display','none')
+    $("#order").css('display','none')
+    console.log("customer")
+})
+$("#nav-item").on('click',()=>{
+    $("#item").css('display','block')
+    $("#customer").css('display','none')
+    $("#home").css('display','none')
+    $("#order-detail").css('display','none')
+    $("#order").css('display','none')
+})
+$("#nav-order-details").on('click',()=>{
+    $("#order-detail").css('display','block')
+    $("#customer").css('display','none')
+    $("#item").css('display','none')
+    $("#home").css('display','none')
+    $("#order").css('display','none')
+});
+$("#nav-orders").on('click',()=>{
+    $("#order").css('display','block')
+    $("#customer").css('display','none')
+    $("#item").css('display','none')
+    $("#order-detail").css('display','none')
+    $("#home").css('display','none')
+});
