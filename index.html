@@ -23,7 +23,7 @@
             left: 0;
             background-color: #f8f9fa; /* Background color for the side pane */
             padding: 20px; /* Padding for content inside the side pane */
-            background-image: url("../../assets/img/1 (2).jpg");
+            background-image: url("assets/img/1 (2).jpg");
             background-size: cover;
             z-index: 1; /* Ensure side pane appears above the content */
         }
@@ -39,7 +39,7 @@
             left: 0;
             background-color: #f8f9fa;
             padding: 20px;
-            background-image: url("../../assets/img/1 (2).jpg");
+            background-image: url("assets/img/1 (2).jpg");
             background-size: cover;
             z-index: 1;
             border:solid black 2px
@@ -70,7 +70,7 @@
     </style>
 </head>
 <body>
-<script src="../../assets/lib/jquery-3.7.1.min.js"></script>
+<script src="assets/lib/jquery-3.7.1.min.js"></script>
 <nav class="navbar navbar-expand-lg sticky-top bg-body-tertiary" data-bs-theme="dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Symplify</a>
@@ -110,13 +110,13 @@
     </div>
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="../../assets/img/book-library-with-open-textbook-min.jpg" class="d-block w-100" alt="...">
+            <img src="assets/img/book-library-with-open-textbook-min.jpg" class="d-block w-100" alt="...">
         </div>
         <div class="carousel-item">
-            <img src="../../assets/img/top-min.jpg" class="d-block w-100" alt="...">
+            <img src="assets/img/top-min.jpg" class="d-block w-100" alt="...">
         </div>
         <div class="carousel-item">
-            <img src="../../assets/img/bottom-min.jpg" class="d-block w-100" alt="...">
+            <img src="assets/img/bottom-min.jpg" class="d-block w-100" alt="...">
         </div>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -144,36 +144,21 @@
             </div>
             <div class="col-md-6 text-end">
                 <button class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#addCustomerModal">Add</button>
-                <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#updateCustomer">Update</button>
+                <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#updateCustomer" id="updateCustBtn">Update</button>
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <table class="table">
+                <table class="table" id="cust-table">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Email</th>
+                        <th scope="col">Address</th>
                         <th scope="col">Phone</th>
-                        <th scope="col">Actions</th> <!-- Added Actions column -->
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>John Doe</td>
-                        <td>johndoe@example.com</td>
-                        <td>123-456-7890</td>
-                        <td><i  class="fas fa-trash-alt text-danger"></i></td> <!-- Added trashcan icon -->
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jane Smith</td>
-                        <td>janesmith@example.com</td>
-                        <td>987-654-3210</td>
-                        <td><i class="fas fa-trash-alt text-danger"></i></td> <!-- Added trashcan icon -->
-                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -192,18 +177,18 @@
                     <!-- Your form for adding a customer goes here -->
                     <form>
                         <div class="mb-3">
-                            <label for="customerName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="customerName">
+                            <label for="custName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="custName">
                         </div>
                         <div class="mb-3">
-                            <label for="customerEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="customerEmail">
+                            <label for="custAddress" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="custAddress">
                         </div>
                         <div class="mb-3">
-                            <label for="customerPhone" class="form-label">Phone</label>
-                            <input type="tel" class="form-control" id="customerPhone">
+                            <label for="custPhone" class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="custPhone">
                         </div>
-                        <button type="submit" class="btn btn-outline-primary">Add Customer</button>
+                        <button type="button" class="btn btn-outline-primary" id="btnCustomerAdd">Add Customer</button>
                     </form>
                 </div>
             </div>
@@ -221,18 +206,22 @@
                     <!-- Your form for adding a customer goes here -->
                     <form>
                         <div class="mb-3">
+                            <label id="customerIdUp" class="form-label">CXXX</label>
+                        </div>
+                        <div class="mb-3">
                             <label for="customerNameUp" class="form-label">Name</label>
                             <input type="text" class="form-control" id="customerNameUp">
                         </div>
                         <div class="mb-3">
-                            <label for="customerEmailUp" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="customerEmailUp">
+                            <label for="customerAddressUp" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="customerAddressUp">
                         </div>
                         <div class="mb-3">
                             <label for="customerPhoneUp" class="form-label">Phone</label>
                             <input type="tel" class="form-control" id="customerPhoneUp">
                         </div>
-                        <button type="submit" class="btn btn-outline-primary">Update</button>
+                        <button type="button" class="btn btn-outline-primary" id="btnUpdateCustomer-modal">Update</button>
+                        <button type="button" class="btn btn-outline-danger" id="btnDeleteCustomer-modal">Delete</button>
                     </form>
                 </div>
             </div>
@@ -512,6 +501,7 @@
     </div>
 </section>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-<script src="js/symplify.js"></script>
+<script src="controller/nav.js"></script>
+<script type="module" src="controller/customerController.js"></script>
 </body>
 </html>
