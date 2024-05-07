@@ -87,3 +87,76 @@ $("#btnDeleteCustomer-modal").on('click',()=>{
     loadTable()
     clearCustomer()
 })
+
+$("#searchButton").on('click', () => {
+    const searchQuery = $("#searchBar").val().trim().toLowerCase();
+    const searchResults = [];
+
+
+    customers.forEach(customer => {
+        if (
+            customer.custId.toLowerCase() === searchQuery ||
+            customer.custName.toLowerCase().includes(searchQuery) ||
+            customer.custAddress.toLowerCase().includes(searchQuery) ||
+            customer.custPhone.toLowerCase() === searchQuery
+        ) {
+            searchResults.push(customer);
+        }
+    });
+
+    $("#cust-table tbody").empty();
+
+
+    searchResults.forEach(customer => {
+        $("#cust-table tbody").append(`
+            <tr>
+                <td>${customer.custId}</td>
+                <td>${customer.custName}</td>
+                <td>${customer.custAddress}</td>
+                <td>${customer.custPhone}</td>
+            </tr>
+        `);
+    });
+
+
+    if (searchResults.length === 0) {
+        $("#cust-table tbody").html("<tr><td colspan='4'>No matching customers found.</td></tr>");
+    }
+});
+
+function suggestNames(input) {
+    const suggestions = [];
+    const inputText = input.toLowerCase().trim();
+
+
+    customers.forEach(customer => {
+        if (customer.custName.toLowerCase().startsWith(inputText)) {
+            suggestions.push(customer.custName);
+        }
+    });
+
+    return suggestions;
+}
+
+
+function updateSuggestions(suggestions) {
+    const suggestionsList = $("#suggestions");
+
+    suggestionsList.empty();
+
+    suggestions.forEach(suggestion => {
+        suggestionsList.append(`<li>${suggestion}</li>`);
+    });
+}
+$("#searchBar").on('input', function() {
+    const input = $(this).val();
+    const suggestions = suggestNames(input);
+
+    updateSuggestions(suggestions);
+
+    if (input.trim() === '') {
+        $("#suggestions").hide();
+    } else {
+        $("#suggestions").show();
+    }
+});

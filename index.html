@@ -138,9 +138,10 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search or delete customer" aria-label="Search">
-                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                    <input class="form-control me-2" type="search" placeholder="Search customer" aria-label="Search" id="searchBar">
+                    <button class="btn btn-outline-primary" type="button" id="searchButton">Search</button>
                 </form>
+                <ul id="suggestions"></ul>
             </div>
             <div class="col-md-6 text-end">
                 <button class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#addCustomerModal">Add</button>
