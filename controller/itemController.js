@@ -90,39 +90,41 @@ $("#delete-item-btn").on('click',()=>{
     clearItem()
 })
 
-$("#searchButton").on('click', () => {
+$("#item-searchButton").on('click', () => {
     const searchQuery = $("#searchBar").val().trim().toLowerCase();
     const searchResults = [];
 
 
-    customers.forEach(customer => {
+    items.forEach(item => {
         if (
-            customer.custId.toLowerCase() === searchQuery ||
-            customer.custName.toLowerCase().includes(searchQuery) ||
-            customer.custAddress.toLowerCase().includes(searchQuery) ||
-            customer.custPhone.toLowerCase() === searchQuery
+            item.itemCode.toLowerCase() === searchQuery ||
+            item.desc.toLowerCase().includes(searchQuery) ||
+            item.author.toLowerCase().includes(searchQuery) ||
+            item.qto.toLowerCase().includes(searchQuery) ||
+            item.price.toLowerCase() === searchQuery
         ) {
-            searchResults.push(customer);
+            searchResults.push(item);
         }
     });
 
-    $("#cust-table tbody").empty();
+    $("#item-table tbody").empty();
 
 
-    searchResults.forEach(customer => {
-        $("#cust-table tbody").append(`
+    searchResults.forEach(item => {
+        $("#item-table tbody").append(`
             <tr>
-                <td>${customer.custId}</td>
-                <td>${customer.custName}</td>
-                <td>${customer.custAddress}</td>
-                <td>${customer.custPhone}</td>
+                <td>${item.itemCode}</td>
+                <td>${item.desc}</td>
+                <td>${item.author}</td>
+                <td>${item.qto}</td>
+                <td>${item.price}</td>
             </tr>
         `);
     });
 
 
     if (searchResults.length === 0) {
-        $("#cust-table tbody").html("<tr><td colspan='4'>No matching customers found.</td></tr>");
+        $("#item-table tbody").html("<tr><td colspan='4'>No matching customers found.</td></tr>");
     }
 });
 
@@ -131,9 +133,9 @@ function suggestNames(input) {
     const inputText = input.toLowerCase().trim();
 
 
-    customers.forEach(customer => {
-        if (customer.custName.toLowerCase().startsWith(inputText)) {
-            suggestions.push(customer.custName);
+    items.forEach(item => {
+        if (item.desc.toLowerCase().startsWith(inputText)) {
+            suggestions.push(item.desc);
         }
     });
 
@@ -150,7 +152,7 @@ function updateSuggestions(suggestions) {
         suggestionsList.append(`<li>${suggestion}</li>`);
     });
 }
-$("#searchBar").on('input', function() {
+$("#item-searchBar").on('input', function() {
     const input = $(this).val();
     const suggestions = suggestNames(input);
 
