@@ -243,40 +243,24 @@
                         </form>
                     </div>
                     <div class="col-md-6 text-end">
-                        <button class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#addCustomerModal">Add</button>
-                        <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#updateItemModal">Update</button>
+                        <button class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#addItemModal">Add</button>
+                        <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#updateItemModal" id="updateItemModal-btn">Update</button>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <table class="table">
+                        <table class="table" id="item-table">
                             <thead>
                             <tr>
                                 <th scope="col">#Item Code</th>
                                 <th scope="col">Description</th>
-                                <th scope="col">Qty. in Stock</th>
-                                <th scope="col">Amount</th>
+                                <th scope="col">Author</th>
+                                <th scope="col">Qty. on Hand</th>
                                 <th scope="col">Price</th>
-                                <th scope="col">Options</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>The Book of ten rings</td>
-                                <td>Andrei Sapowski</td>
-                                <td>10</td>
-                                <td>1000.00</td>
-                                <td><i  class="fas fa-trash-alt text-danger"></i></td> <!-- Added trashcan icon -->
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Rainbow Six</td>
-                                <td>Tom Clsm</td>
-                                <td>20</td>
-                                <td>2000.00</td>
-                                <td><i class="fas fa-trash-alt text-danger"></i></td> <!-- Added trashcan icon -->
-                            </tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -286,7 +270,7 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="assItemModal" tabindex="-1" aria-labelledby="addItemLabel" aria-hidden="true">
+    <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -294,25 +278,28 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Your form for adding a customer goes here -->
                     <form>
                         <div class="mb-3">
-                            <label for="item-id" class="form-label">Item id here</label>
+                            <label for="item-id" class="form-label">Item Code here</label>
                             <input type="text" class="form-control" id="item-id">
                         </div>
                         <div class="mb-3">
-                            <label for="Item-name" class="form-label">Item name here</label>
-                            <input type="text" class="form-control" id="Item-name">
+                            <label for="item-name" class="form-label">Item name/Desc here</label>
+                            <input type="text" class="form-control" id="item-name">
                         </div>
                         <div class="mb-3">
-                            <label for="QtyofHand" class="form-label">Qty. in Stock</label>
-                            <input type="email" class="form-control" id="QtyofHand">
+                            <label for="item-author" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="item-author">
                         </div>
                         <div class="mb-3">
-                            <label for="itemPrice" class="form-label">Price</label>
-                            <input type="number" class="form-control" id="itemPrice">
+                            <label for="qto" class="form-label">Qty. in Stock</label>
+                            <input type="number" class="form-control" id="qto">
                         </div>
-                        <button type="submit" class="btn btn-outline-primary">Add Customer</button>
+                        <div class="mb-3">
+                            <label for="item-price" class="form-label">Price</label>
+                            <input type="number" class="form-control" id="item-price">
+                        </div>
+                        <button type="button" class="btn btn-outline-primary" id="btnAddItem">Add Item</button>
                     </form>
                 </div>
             </div>
@@ -327,25 +314,31 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Your form for adding a customer goes here -->
+
                     <form>
                         <div class="mb-3">
                             <label for="item-id-up" class="form-label">Item id here</label>
                             <input type="text" class="form-control" id="item-id-up">
                         </div>
                         <div class="mb-3">
-                            <label for="Item-name-up" class="form-label">Item name here</label>
-                            <input type="text" class="form-control" id="Item-name-up">
+                            <label for="item-name-up" class="form-label">Item name here</label>
+                            <input type="text" class="form-control" id="item-name-up">
                         </div>
                         <div class="mb-3">
-                            <label for="QtyofHand-up" class="form-label">Qty. in Stock</label>
-                            <input type="email" class="form-control" id="QtyofHand-up">
+                            <label for="item-author-up" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="item-author-up">
                         </div>
                         <div class="mb-3">
-                            <label for="customerPhone-up" class="form-label">Price</label>
-                            <input type="tel" class="form-control" id="customerPhone-up">
+                            <label for="qto-up" class="form-label">Qty. in Stock</label>
+                            <input type="number" class="form-control" id="qto-up">
                         </div>
-                        <button type="submit" class="btn btn-outline-primary">Update Item</button>
+                        <div class="mb-3">
+                            <label for="item-price-up" class="form-label">Price</label>
+                            <input type="number" class="form-control" id="item-price-up">
+                        </div>
+
+                        <button type="button" class="btn btn-outline-primary" id="update-item-btn">Update Item</button>
+                        <button type="button" class="btn btn-outline-primary" id="delete-item-btn">Delete Item</button>
                     </form>
                 </div>
             </div>
@@ -504,5 +497,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="controller/nav.js"></script>
 <script type="module" src="controller/customerController.js"></script>
+<script type="module" src="controller/itemController.js"></script>
 </body>
 </html>

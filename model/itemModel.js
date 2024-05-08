@@ -23,12 +23,12 @@ export class ItemModel{
         this._qto = value;
     }
 
-    get amount() {
-        return this._amount;
+    get author() {
+        return this._author;
     }
 
-    set amount(value) {
-        this._amount = value;
+    set author(value) {
+        this._author = value;
     }
 
     get price() {
@@ -38,11 +38,11 @@ export class ItemModel{
     set price(value) {
         this._price = value;
     }
-    constructor(itemCode,desc,qto,amount,price) {
+    constructor(itemCode,desc,author,qto,price) {
         this._itemCode = itemCode;
         this._desc = desc;
+        this._author = author;
         this._qto = qto;
-        this._amount = amount;
         this._price = price;
     }
 }
