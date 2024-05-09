@@ -61,7 +61,7 @@
         }
 
         .table-pane-order {
-            margin-left:5% ;
+            margin-left:9% ;
             padding: 100px;
             margin-top: calc(100vh - 56px);
         }
@@ -235,18 +235,19 @@
         <div class="row">
             <div class="col-md-2 side-pane-item"></div>
             <div class="col-md-10 right-pane-item">
-                <!-- Content for the right pane goes here -->
+
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <form class="d-flex">
                             <input class="form-control me-2" type="search" placeholder="Search item" aria-label="Search" id="item-searchBar">
-                            <button class="btn btn-outline-primary" type="submit" id="item-searchButton">Search</button>
+                            <button class="btn btn-outline-primary" type="button" id="item-searchButton">Search</button>
                         </form>
                     </div>
                     <div class="col-md-6 text-end">
                         <button class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#addItemModal">Add</button>
                         <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#updateItemModal" id="updateItemModal-btn">Update</button>
                     </div>
+                    <ul id="item-suggestions" style="margin-left: 5%"></ul>
                 </div>
                 <div class="row">
                     <div class="col">
@@ -356,7 +357,8 @@
                 <form class="row g-3">
                     <div class="col-md-6">
                         <label for="order-item-id" class="form-label">Item Id</label>
-                        <select type="text" class="form-control" id="order-item-id"></select>
+                        <input type="text" class="form-control" id="order-item-id">
+                        <ul id="item-id-suggestions"></ul>
                     </div>
                     <div class="col-md-6">
                         <label for="order-item-desc" class="form-label">Item Description</label>
@@ -375,8 +377,11 @@
                         <input type="text" class="form-control" id="order-sub-total">
                     </div>
                     <div class="col-12">
-                        <button type="submit" class="btn btn-outline-success me-2" id="btn-add-to-cart">Add to cart</button>
+                        <button type="button" class="btn btn-outline-success me-2" id="btn-add-to-cart">Add to cart</button>
+                        <button type="button" class="btn btn-outline-success me-2" id="btn-update-cart-item">update</button>
+                        <button type="button" class="btn btn-outline-danger me-2" id="btn-cart-item-delete" style="display: none" >Remove from cart</button>
                     </div>
+
                 </form>
             </div>
 
@@ -384,38 +389,39 @@
                 <h1>New Order</h1>
                 <form class="row g-3">
                     <div class="col-md-6">
-                        <label for="inputEmail4" class="form-label">Order Id</label>
-                        <input type="number" class="form-control" id="inputEmail4">
+                        <label for="orderId" class="form-label">Order Id</label>
+                        <input type="text" class="form-control" id="orderId">
+                        <ul id="order-cust-id-suggestions"></ul>
                     </div>
                     <div class="col-md-6">
-                        <label for="inputPassword4" class="form-label">Customer Id</label>
-                        <input type="text" class="form-control" id="inputPassword4">
+                        <label for="order-cust-id" class="form-label">Customer Id</label>
+                        <input type="text" class="form-control" id="order-cust-id">
                     </div>
                     <div class="col-12">
-                        <label for="inputAddress" class="form-label">Date</label>
-                        <input type="date" class="form-control" id="inputAddress" placeholder="YYYY/MM/DD">
+                        <label for="order-date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="order-date" placeholder="YYYY/MM/DD">
                     </div>
                     <div class="col-12">
-                        <label for="inputAddress2" class="form-label">Customer Name</label>
-                        <input type="text" class="form-control" id="inputAddress2" placeholder="Customer Name">
+                        <label for="order-cust-name" class="form-label">Customer Name</label>
+                        <input type="text" class="form-control" id="order-cust-name" placeholder="Customer Name">
                     </div>
                     <div class="col-md-4">
-                        <label for="inputCity" class="form-label">Total</label>
-                        <input type="text" class="form-control" id="inputCity">
+                        <label for="order-total" class="form-label">Total</label>
+                        <input type="number" class="form-control" id="order-total">
                     </div>
                     <div class="col-md-4">
-                        <label for="inputState" class="form-label">Discount</label>
-                        <select id="inputState" class="form-select">
+                        <label for="order-discount" class="form-label">Discount</label>
+                        <select id="order-discount" class="form-select">
                             <option selected>Choose...</option>
                             <option>25% off</option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="inputZip" class="form-label">Sub Total</label>
-                        <input type="text" class="form-control" id="inputZip">
+                        <label for="order-full-total" class="form-label">Sub Total</label>
+                        <input type="text" class="form-control" id="order-full-total">
                     </div>
                     <div class="col-12">
-                        <button type="submit" class="btn btn-outline-primary">Buy</button>
+                        <button type="button" class="btn btn-outline-primary">Buy</button>
                     </div>
                 </form>
             </div>
@@ -427,12 +433,12 @@
                     <tr>
                         <th scope="col">#Item Code</th>
                         <th scope="col">Description</th>
-                        <th scope="col">Author</th>
-                        <th scope="col">Qty. on Hand</th>
-                        <th scope="col">Price</th>
+                        <th scope="col">Unit price</th>
+                        <th scope="col">Qty</th>
+                        <th scope="col">Total Price</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="order-item-tbody">
 
                     </tbody>
                 </table>

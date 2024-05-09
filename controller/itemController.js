@@ -150,7 +150,7 @@ function suggestNames(input) {
 
 
 function updateSuggestions(suggestions) {
-    const suggestionsList = $("#suggestions");
+    const suggestionsList = $("#item-suggestions");
 
     suggestionsList.empty();
 
@@ -165,8 +165,8 @@ $("#item-searchBar").on('input', function() {
     updateSuggestions(suggestions);
 
     if (input.trim() === '') {
-        $("#suggestions").hide();
+        $("#item-suggestions").hide();
     } else {
-        $("#suggestions").show();
+        $("#item-suggestions").show();
     }
 });

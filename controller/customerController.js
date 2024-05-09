@@ -1,8 +1,9 @@
 import {customers} from "../db/db.js";
 import  {CustomerModel} from "../model/customerModel.js";
 
-let idCounter = 1
+
 let clickedIndex;
+let idCounter = 1
 $("#btnCustomerAdd").on('click',()=>{
     let custId = getCustId()
     let custName = $("#custName").val()
