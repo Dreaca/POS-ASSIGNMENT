@@ -11,13 +11,11 @@ $("#btnCustomerAdd").on('click',()=>{
 
     let customer = new CustomerModel(custId(),custName,custAddress,custPhone)
     customers.push(customer)
-    console.log(customers)
     clearCustomer()
     loadTable()
 
 })
 function  getCustId(){
-    console.log(idCounter)
     return function (){
         let custId = String(idCounter).padStart(3,'0')
         let id = "C"+custId;
@@ -36,7 +34,7 @@ function clearCustomer() {
     $("#customerPhoneUp").val("");
 }
 function loadTable(){
-    $("#cust-table tbody tr").append().empty()
+    $("#cust-table-tbody").append().empty()
     customers.map((item,index)=>{
         var record =
             `<tr>
@@ -45,13 +43,17 @@ function loadTable(){
         <td class = "custAddress">${item.custAddress}</td>
         <td class = "custPhone">${item.custPhone}</td>
             </tr>`
-        $("#cust-table").append(record);
+        $("#cust-table-tbody").append(record);
     })
 
 }
-$("#cust-table tbody").on('click','tr',function (){
+$("#cust-table-tbody").on('click','tr',function (){
+
     let index = $(this).index();
+
     clickedIndex = index;
+
+
     let custId = $(this).find(".custId").text()
     let custName = $(this).find(".custName").text()
     let custAddress = $(this).find(".custAddress").text()
@@ -71,6 +73,7 @@ $("#btnUpdateCustomer-modal").on('click',()=>{
     let custNameUpdated = $("#customerNameUp").val();
     let custAddressUpdated = $("#customerAddressUp").val();
     let custPhoneUpdated = $("#customerPhoneUp").val();
+
 
     let customerObject = customers[clickedIndex];
 
@@ -104,7 +107,7 @@ $("#searchButton").on('click', () => {
         }
     });
 
-    $("#cust-table tbody").empty();
+    $("#cust-table-tbody").empty();
 
 
     searchResults.forEach(customer => {
@@ -120,7 +123,7 @@ $("#searchButton").on('click', () => {
 
 
     if (searchResults.length === 0) {
-        $("#cust-table tbody").html("<tr><td colspan='4'>No matching customers found.</td></tr>");
+        $("#cust-table-tbody").html("<tr><td colspan='4'>No matching customers found.</td></tr>");
     }
 });
 

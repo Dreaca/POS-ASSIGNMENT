@@ -5,6 +5,7 @@ import {ItemModel} from "../model/itemModel.js";
 
 let clickedIndex;
 $("#btnAddItem").on('click',()=>{
+
     let itemId =$("#item-id").val();
     let itemName = $("#item-name").val()
     let author = $("#item-author").val()
@@ -13,9 +14,9 @@ $("#btnAddItem").on('click',()=>{
 
     let item = new ItemModel(itemId,itemName,author,qto,price)
     items.push(item)
-    console.log(items)
-    clearItem()
+
     loadTable()
+    clearItem()
 
 })
 function clearItem() {
@@ -32,7 +33,8 @@ function clearItem() {
     $("#item-price-up").val("")
 }
 function loadTable(){
-    $("#item-table tbody tr").append().empty()
+    $("#item-table-tbody").append().empty()
+
     items.map((item,index)=>{
         var record =
             `<tr>
@@ -42,13 +44,17 @@ function loadTable(){
         <td class = "item-qto">${item.qto}</td>
         <td class = "item-price">${item.price}</td>
             </tr>`
-        $("#item-table").append(record);
+
+        $("#item-table-tbody").append(record);
+
     })
 
 }
-$("#item-table tbody").on('click','tr',function (){
+$("#item-table-tbody").on('click','tr',function (){
+
     let index = $(this).index();
     clickedIndex = index;
+
     let itemId = $(this).find(".item-code").text()
     let desc = $(this).find(".item-desc").text()
     let author = $(this).find(".item-author").text()
@@ -107,7 +113,7 @@ $("#item-searchButton").on('click', () => {
         }
     });
 
-    $("#item-table tbody").empty();
+    $("#item-table-tbody").empty();
 
 
     searchResults.forEach(item => {
@@ -124,7 +130,7 @@ $("#item-searchButton").on('click', () => {
 
 
     if (searchResults.length === 0) {
-        $("#item-table tbody").html("<tr><td colspan='4'>No matching customers found.</td></tr>");
+        $("#item-table-tbody").html("<tr><td colspan='4'>No matching customers found.</td></tr>");
     }
 });
 

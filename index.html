@@ -61,11 +61,12 @@
         }
 
         .table-pane-order {
+            margin-left:5% ;
             padding: 100px;
             margin-top: calc(100vh - 56px);
         }
         .table-pane-order h1{
-            padding-left: 70px;
+            padding-left: 50%;
         }
     </style>
 </head>
@@ -159,7 +160,7 @@
                         <th scope="col">Phone</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="cust-table-tbody">
                     </tbody>
                 </table>
             </div>
@@ -259,7 +260,7 @@
                                 <th scope="col">Price</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="item-table-tbody">
 
                             </tbody>
                         </table>
@@ -354,27 +355,27 @@
                 <h1>Add Item to order</h1>
                 <form class="row g-3">
                     <div class="col-md-6">
-                        <label for="Item Id" class="form-label">Item Id</label>
-                        <input type="number" class="form-control" id="Item Id">
+                        <label for="order-item-id" class="form-label">Item Id</label>
+                        <select type="text" class="form-control" id="order-item-id"></select>
                     </div>
                     <div class="col-md-6">
-                        <label for="itemDesc" class="form-label">Item Description</label>
-                        <input type="text" class="form-control" id="itemDesc">
+                        <label for="order-item-desc" class="form-label">Item Description</label>
+                        <input type="text" class="form-control" id="order-item-desc">
                     </div>
                     <div class="col-12">
-                        <label for="Unit Price" class="form-label">Unit Price</label>
-                        <input type="text" class="form-control" id="Unit Price">
+                        <label for="order-item-price" class="form-label">Unit Price</label>
+                        <input type="text" class="form-control" id="order-item-price">
                     </div>
                     <div class="col-12">
-                        <label for="Quantity" class="form-label">Quantity</label>
-                        <input type="Number" class="form-control" id="Quantity" placeholder="Enter Quantity">
+                        <label for="order-item-qty" class="form-label">Quantity</label>
+                        <input type="Number" class="form-control" id="order-item-qty" placeholder="Enter Quantity">
                     </div>
                     <div class="col-md-4">
-                        <label for="Sub Total" class="form-label">Sub Total</label>
-                        <input type="text" class="form-control" id="Sub Total">
+                        <label for="order-sub-total" class="form-label">Sub Total</label>
+                        <input type="text" class="form-control" id="order-sub-total">
                     </div>
                     <div class="col-12">
-                        <button type="submit" class="btn btn-outline-success me-2">Add to cart</button>
+                        <button type="submit" class="btn btn-outline-success me-2" id="btn-add-to-cart">Add to cart</button>
                     </div>
                 </form>
             </div>
@@ -421,33 +422,18 @@
 
             <div class="col-md-8 table-pane-order" style="margin-top: 0;">
                 <h1>Item List</h1>
-                <table class="table">
+                <table class="table" id="item-table-order">
                     <thead>
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
+                        <th scope="col">#Item Code</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Author</th>
+                        <th scope="col">Qty. on Hand</th>
+                        <th scope="col">Price</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td colspan="2">Larry the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
+
                     </tbody>
                 </table>
             </div>
@@ -498,5 +484,6 @@
 <script src="controller/nav.js"></script>
 <script type="module" src="controller/customerController.js"></script>
 <script type="module" src="controller/itemController.js"></script>
+<script type="module" src="controller/orderController.js"></script>
 </body>
 </html>
