@@ -378,7 +378,7 @@
                     </div>
                     <div class="col-12">
                         <button type="button" class="btn btn-outline-success me-2" id="btn-add-to-cart">Add to cart</button>
-                        <button type="button" class="btn btn-outline-success me-2" id="btn-update-cart-item">update</button>
+                        <button type="button" class="btn btn-outline-success me-2" id="btn-update-cart-item" style="display: none">update</button>
                         <button type="button" class="btn btn-outline-danger me-2" id="btn-cart-item-delete" style="display: none" >Remove from cart</button>
                     </div>
 
@@ -411,17 +411,14 @@
                     </div>
                     <div class="col-md-4">
                         <label for="order-discount" class="form-label">Discount</label>
-                        <select id="order-discount" class="form-select">
-                            <option selected>Choose...</option>
-                            <option>25% off</option>
-                        </select>
+                        <input id="order-discount" class="form-control" disabled placeholder="5% off" >
                     </div>
                     <div class="col-md-4">
                         <label for="order-full-total" class="form-label">Sub Total</label>
                         <input type="text" class="form-control" id="order-full-total">
                     </div>
                     <div class="col-12">
-                        <button type="button" class="btn btn-outline-primary">Buy</button>
+                        <button type="button" class="btn btn-outline-primary" id="buy-order">Buy</button>
                     </div>
                 </form>
             </div>
@@ -442,6 +439,7 @@
 
                     </tbody>
                 </table>
+                <button type="button" class="btn btn-outline-primary" id="order-finished">Finished</button>
             </div>
         </div>
     </div>

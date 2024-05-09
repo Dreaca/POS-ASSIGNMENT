@@ -122,6 +122,30 @@ $("#order-item-tbody").on('click','tr',function (){
     $("#order-sub-total").val(total)
 
     $("#btn-cart-item-delete").css('display','inline-block')
+    $("#btn-update-cart-item").css('display','inline-block')
+})
+$("#btn-cart-item-delete").on('click',()=>{
+    cartItems.splice(clickedIndex,1);
+    clearCart()
+    loadTable()
+})
+$("#btn-update-cart-item").on('click',()=>{
+    let itemId = $("#order-item-id").val()
+    let itemDesc = $("#order-item-desc").val()
+    let price =$("#order-item-price").val()
+    let qty =$("#order-item-qty").val()
+    let subTotal = $("#order-sub-total").val()
+
+    let cartItem = cartItems[clickedIndex];
+
+    cartItem.itemCode = itemId;
+    cartItem.desc=itemDesc;
+    cartItem.unitPrice = price;
+    cartItem.qty=qty;
+    cartItem.totalPrice = subTotal
+
+    clearCart()
+    loadTable()
 })
 function  getOrderId(){
     return function (){
@@ -177,3 +201,11 @@ $("#order-cust-id").on('input', function() {
         $("#order-cust-id-suggestions").show();
     }
 });
+$("#order-finished").on('click',()=>{
+    let total = 0;
+    cartItems.forEach( item=> {
+         total = total + parseInt(item.totalPrice)
+    })
+    $("#order-total").val(total)
+    $("#order-full-total").val(total-((total/100)*5))
+})
