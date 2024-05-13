@@ -1,7 +1,9 @@
-import {cartItems, items, orderItems,customers} from "../db/db.js";
+import {cartItems, items, orderItems, customers, orders, orderDetails} from "../db/db.js";
 import {OrderModel} from "../model/orderModel.js";
 import {ItemModel} from "../model/itemModel.js";
 import {CartModel} from "../model/cartModel.js";
+import {loadItemTable} from "./itemController.js";
+import {OrderDetailModel} from "../model/orderDetailModel.js";
 
 let displayCart = [];
 let clickedIndex;
@@ -66,20 +68,32 @@ $("#order-item-qty").on('input',()=>{
 
 $("#btn-add-to-cart").on('click',()=>{
     let itemId = $("#order-item-id").val()
+    let itemDesc = $("#order-item-desc").val()
+    let price =$("#order-item-price").val()
+    let qty =$("#order-item-qty").val()
+    let subTotal = $("#order-sub-total").val()
     items.forEach(item =>{
         if (item.itemCode.toLowerCase() === itemId) {
            orderItems.push(item)
         }
     })
-    let itemDesc = $("#order-item-desc").val()
-    let price =$("#order-item-price").val()
-    let qty =$("#order-item-qty").val()
-    let subTotal = $("#order-sub-total").val()
 
     let cartItem = new CartModel(itemId,itemDesc,price,qty,subTotal)
     cartItems.push(cartItem)
     loadTable()
     clearCart()
+
+    let itemToReduce
+
+    items.forEach(item =>{
+        if (itemId === item.itemCode){
+            itemToReduce = item;
+        }
+    })
+    itemToReduce.qto = itemToReduce.qto - qty;
+    console.log(itemToReduce.qto);
+    loadItemTable()
+
 })
 
 function loadTable(){
@@ -125,9 +139,20 @@ $("#order-item-tbody").on('click','tr',function (){
     $("#btn-update-cart-item").css('display','inline-block')
 })
 $("#btn-cart-item-delete").on('click',()=>{
+    let itemId =  $("#order-item-id").val()
+    let itemInc;
+    items.forEach(item=>{
+        if (item.itemCode === itemId){
+            itemInc = item;
+        }
+    })
+    itemInc.qto = itemInc.qto + parseInt($("#order-item-qty").val())
+    console.log(itemInc.qto)
     cartItems.splice(clickedIndex,1);
+    loadItemTable()
     clearCart()
     loadTable()
+
 })
 $("#btn-update-cart-item").on('click',()=>{
     let itemId = $("#order-item-id").val()
@@ -208,4 +233,19 @@ $("#order-finished").on('click',()=>{
     })
     $("#order-total").val(total)
     $("#order-full-total").val(total-((total/100)*5))
+})
+$("#buy-order").on('click',()=>{
+    let id = $("#orderId").val()
+    let custId = $("#order-cust-id").val()
+    let date = $("#order-date").val()
+    let custName = $("#order-cust-name").val()
+    let total = $("#order-total").val()
+    let discount  = $("#order-discount").val()
+    let subTotal = $("#order-sub-total").val()
+
+    let order = new OrderModel(id,custId,date,custName,total,discount,subTotal)
+    orders.push(order);
+    let orderDetail = new OrderDetailModel(order,cartItems);
+    orderDetails.push(orderDetail)
+
 })

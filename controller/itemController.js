@@ -15,7 +15,7 @@ $("#btnAddItem").on('click',()=>{
     let item = new ItemModel(itemId,itemName,author,qto,price)
     items.push(item)
 
-    loadTable()
+    loadItemTable()
     clearItem()
 
 })
@@ -32,7 +32,7 @@ function clearItem() {
     $("#qto-up").val("")
     $("#item-price-up").val("")
 }
-function loadTable(){
+export function loadItemTable(){
     $("#item-table-tbody").append().empty()
 
     items.map((item,index)=>{
@@ -88,11 +88,11 @@ $("#update-item-btn").on('click',()=>{
     itemObject.price = priceUpdated
 
     clearItem()
-    loadTable()
+    loadItemTable()
 })
 $("#delete-item-btn").on('click',()=>{
     items.splice(clickedIndex,1)
-    loadTable()
+    loadItemTable()
     clearItem()
 })
 
