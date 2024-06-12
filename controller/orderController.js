@@ -1,6 +1,6 @@
 import {cartItems, items, orderItems, customers, orders, orderDetails} from "../db/db.js";
 import {OrderModel} from "../model/orderModel.js";
-import {ItemModel} from "../model/itemModel.js";
+
 import {CartModel} from "../model/cartModel.js";
 import {loadItemTable} from "./itemController.js";
 import {OrderDetailModel} from "../model/orderDetailModel.js";
@@ -33,7 +33,7 @@ function suggestItemIds(input) {
 
     items.forEach(item => {
         if (item.itemCode.toLowerCase().startsWith(inputText)) {
-            suggestions.push(item.itemCode + "-" + item.desc);
+            suggestions.push(item.itemCode + "-" + item.desc + "- QTO : "+item.qto);
         }
     });
 
@@ -153,6 +153,10 @@ $("#btn-cart-item-delete").on('click',()=>{
     clearCart()
     loadTable()
 
+    $("#btn-cart-item-delete").css('display','none')
+    $("#btn-update-cart-item").css('display','none')
+
+
 })
 $("#btn-update-cart-item").on('click',()=>{
     let itemId = $("#order-item-id").val()
@@ -171,6 +175,9 @@ $("#btn-update-cart-item").on('click',()=>{
 
     clearCart()
     loadTable()
+
+    $("#btn-cart-item-delete").css('display','none')
+    $("#btn-update-cart-item").css('display','none')
 })
 function  getOrderId(){
     return function (){
@@ -240,12 +247,21 @@ $("#buy-order").on('click',()=>{
     let date = $("#order-date").val()
     let custName = $("#order-cust-name").val()
     let total = $("#order-total").val()
-    let discount  = $("#order-discount").val()
-    let subTotal = $("#order-sub-total").val()
+    let discount  = "5%"
+    let subTotal = $("#order-full-total").val()
 
     let order = new OrderModel(id,custId,date,custName,total,discount,subTotal)
     orders.push(order);
     let orderDetail = new OrderDetailModel(order,cartItems);
     orderDetails.push(orderDetail)
+
+    $("#orderId").val("")
+    $("#order-cust-id").val("")
+    $("#order-date").val("")
+    $("#order-cust-name").val("")
+    $("#order-total").val("")
+    $("#order-full-total").val("")
+
+    $("#order-item-tbody").append().empty()
 
 })
