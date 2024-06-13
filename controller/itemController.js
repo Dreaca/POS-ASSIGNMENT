@@ -1,5 +1,6 @@
 import {items} from "../db/db.js";
 import {ItemModel} from "../model/itemModel.js";
+import {RegexValidator} from "../validation/RegexValidator.js";
 
 
 
@@ -12,11 +13,35 @@ $("#btnAddItem").on('click',()=>{
     let qto = $("#qto").val()
     let price  = $("#item-price").val()
 
-    let item = new ItemModel(itemId,itemName,author,qto,price)
-    items.push(item)
+    let validator = new RegexValidator();
 
-    loadItemTable()
-    clearItem()
+    const validationResult = validator.validateItem(itemId, itemName, author, qto, price);
+
+    if (validationResult.isValid){
+        let item = new ItemModel(itemId,itemName,author,qto,price)
+        items.push(item)
+
+        loadItemTable()
+        clearItem()
+    }
+    else {
+        alert('Invalid item data. Please check the input fields.');
+        if (!validationResult.isItemIdValid) {
+            alert('Invalid Item ID');
+        }
+        if (!validationResult.isItemNameValid) {
+            alert('Invalid Item Name');
+        }
+        if (!validationResult.isAuthorValid) {
+            alert('Invalid Author');
+        }
+        if (!validationResult.isQtoValid) {
+            alert('Invalid Quantity');
+        }
+        if (!validationResult.isPriceValid) {
+            alert('Invalid Price');
+        }
+        }
 
 })
 function clearItem() {

@@ -72,6 +72,7 @@
 </head>
 <body>
 <script src="assets/lib/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <nav class="navbar navbar-expand-lg sticky-top bg-body-tertiary" data-bs-theme="dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Symplify</a>
@@ -205,7 +206,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Your form for adding a customer goes here -->
                     <form>
                         <div class="mb-3">
                             <label id="customerIdUp" class="form-label">CXXX</label>
@@ -466,12 +466,39 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="listItems" tabindex="-1" aria-labelledby="listItems-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="listItems-label">Item List</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table" id="itemList-orderDetails">
+                    <thead>
+                    <tr>
+                        <th scope="col">#Item Code</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Unit Price</th>
+                        <th scope="col">Qty</th>
+                        <th scope="col">Total Price</th>
+                    </tr>
+                    </thead>
+                    <tbody id="itemList-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
 </section>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
 <script src="controller/nav.js"></script>
 <script type="module" src="controller/customerController.js"></script>
 <script type="module" src="controller/itemController.js"></script>
 <script type="module" src="controller/orderController.js"></script>
 <script type="module" src="controller/orderDetailController.js"></script>
+<script type="module" src="validation/RegexValidator.js"></script>
 </body>
 </html>

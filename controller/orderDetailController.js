@@ -1,8 +1,8 @@
 import {orderDetails} from "../db/db.js";
-import {OrderDetailModel} from "../model/orderDetailModel.js";
 
 
 let clickedIndex;
+
 $("#nav-order-details").on('click',()=>{
     loadODtable()
 })
@@ -23,12 +23,28 @@ function loadODtable(){
          $("#order-detail-tbody").append(record)
      })
 }
-$("#order-detail-tbody").on('click','tr',function (){
+$("#order-detail-tbody").on('click', 'tr', function() {
     let index = $(this).index();
-    clickedIndex = index;
+    let order = orderDetails[index];
+    populateItemList(order.ItemList);
+    $('#listItems').modal('show');
+});
 
-    let order = orderDetails[clickedIndex]
+function populateItemList(itemList) {
+    let itemListBody = $("#itemList-body");
+    itemListBody.empty();
 
-    console.log(order.item)
-})
+    itemList.forEach(item => {
+        let row = `
+                <tr>
+                    <td>${item.itemCode}</td>
+                    <td>${item.desc}</td>
+                    <td>${item.unitPrice}</td>
+                    <td>${item.qty}</td>
+                    <td>${item.unitPrice * item.qty}</td>
+                </tr>
+            `;
+        itemListBody.append(row);
+    });
+}
 

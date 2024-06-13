@@ -1,5 +1,6 @@
 import {customers} from "../db/db.js";
 import  {CustomerModel} from "../model/customerModel.js";
+import {RegexValidator} from "../validation/RegexValidator.js";
 
 
 let clickedIndex;
@@ -10,10 +11,30 @@ $("#btnCustomerAdd").on('click',()=>{
     let custAddress = $("#custAddress").val()
     let custPhone = $("#custPhone").val()
 
-    let customer = new CustomerModel(custId(),custName,custAddress,custPhone)
-    customers.push(customer)
-    clearCustomer()
-    loadTable()
+    let validator = new RegexValidator();
+
+    const validationResult = validator.validateCustomer(custName, custAddress, custPhone);
+    if (validationResult.isValid){
+        let customer = new CustomerModel(custId(),custName,custAddress,custPhone)
+        customers.push(customer)
+        clearCustomer()
+        loadTable()
+    }
+    else {
+        alert('Invalid customer data. Please check the input fields.');
+        if (!validationResult.isNameValid) {
+            alert('Invalid Name');
+        }
+        if (!validationResult.isAddressValid) {
+            alert('Invalid Address');
+        }
+        if (!validationResult.isPhoneValid) {
+            alert('Invalid Phone');
+        }
+    }
+
+
+
 
 })
 function  getCustId(){

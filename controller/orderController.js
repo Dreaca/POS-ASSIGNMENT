@@ -22,6 +22,9 @@ $(document).ready(function (){
                     $("#order-item-price").val(item.price)
                     $("#item-id-suggestions").hide();
                 }
+                else{
+                    alert('Invalid Item');
+                }
             })
         }
     })
@@ -72,6 +75,7 @@ $("#btn-add-to-cart").on('click',()=>{
     let price =$("#order-item-price").val()
     let qty =$("#order-item-qty").val()
     let subTotal = $("#order-sub-total").val()
+
     items.forEach(item =>{
         if (item.itemCode.toLowerCase() === itemId) {
            orderItems.push(item)
@@ -196,6 +200,9 @@ $("#order-cust-id").on('blur', (event)=>{
             if (customer.custId.toLowerCase() === custId){
                 $("#order-cust-name").val(customer.custName)
                 $("#order-cust-id-suggestions").hide()
+            }
+            else{
+                alert('Invalid Customer!');
             }
         })
 })
