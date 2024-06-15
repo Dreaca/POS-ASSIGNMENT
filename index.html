@@ -112,7 +112,7 @@
     </div>
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="assets/img/book-library-with-open-textbook-min.jpg" class="d-block w-100" alt="...">
+            <img src="assets/img/book-library-with-open-textbook-min.png" class="d-block w-100" alt="...">
         </div>
         <div class="carousel-item">
             <img src="assets/img/top-min.jpg" class="d-block w-100" alt="...">
@@ -129,10 +129,6 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
     </button>
-</div>
-
-<div class="fixed-bottom-right">
-    <button class="btn btn-primary btn-lg">Next</button>
 </div>
 </section>
 <section id="customer">
@@ -399,7 +395,7 @@
                     </div>
                     <div class="col-12">
                         <label for="order-date" class="form-label">Date</label>
-                        <input type="date" class="form-control" id="order-date" placeholder="YYYY/MM/DD">
+                        <input type="input" class="form-control" id="order-date">
                     </div>
                     <div class="col-12">
                         <label for="order-cust-name" class="form-label">Customer Name</label>
@@ -417,8 +413,16 @@
                         <label for="order-full-total" class="form-label">Sub Total</label>
                         <input type="text" class="form-control" id="order-full-total">
                     </div>
+                    <div class="col-md-4">
+                        <label for="customer-cash" class="form-label">Cash</label>
+                        <input type="text" class="form-control" id="customer-cash">
+                    </div>
                     <div class="col-12">
                         <button type="button" class="btn btn-outline-primary" id="buy-order">Buy</button>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="customer-bal" class="form-label">Balance</label>
+                        <input type="text" class="form-control" id="customer-bal">
                     </div>
                 </form>
             </div>

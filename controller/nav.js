@@ -1,7 +1,6 @@
 $("#nav-home").on('click',()=>{
     $("#home").css('display','block')
-    
-    $("#customer").css('','none')
+    $("#customer").css('display','none')
     $("#item").css('display','none')
     $("#order-detail").css('display','none')
     $("#order").css('display','none')

@@ -8,9 +8,8 @@ import {OrderDetailModel} from "../model/orderDetailModel.js";
 let displayCart = [];
 let clickedIndex;
 let orderIdCounter = 1;
+let subTotal;
 $(document).ready(function (){
-
-
     $("#order-item-id").on('keypress',function (event){
         if (event.which===13){
             event.preventDefault()
@@ -28,6 +27,9 @@ $(document).ready(function (){
             })
         }
     })
+})
+$("#nav-orders").on('click',()=>{
+    $("#order-date").val(new Date().toISOString().slice(0, 10));
 })
 function suggestItemIds(input) {
     const suggestions = [];
@@ -76,27 +78,38 @@ $("#btn-add-to-cart").on('click',()=>{
     let qty =$("#order-item-qty").val()
     let subTotal = $("#order-sub-total").val()
 
-    items.forEach(item =>{
-        if (item.itemCode.toLowerCase() === itemId) {
-           orderItems.push(item)
+    if (itemId === "" || itemDesc === ""|| price === ""){
+        alert("Empty Item !!!")
+    }
+    else if (qty === ""){
+        alert("Please Enter Qty")
+    }
+    else{
+        items.forEach(item =>{
+            if (item.itemCode.toLowerCase() === itemId) {
+                orderItems.push(item)
+            }
+        })
+
+        let itemToReduce
+
+        items.forEach(item =>{
+            if (itemId === item.itemCode){
+                itemToReduce = item;
+            }
+        })
+        if (itemToReduce.qto <qty){
+            alert("Stock Insufficient !!!");
         }
-    })
-
-    let cartItem = new CartModel(itemId,itemDesc,price,qty,subTotal)
-    cartItems.push(cartItem)
-    loadTable()
-    clearCart()
-
-    let itemToReduce
-
-    items.forEach(item =>{
-        if (itemId === item.itemCode){
-            itemToReduce = item;
+        else{
+            itemToReduce.qto = itemToReduce.qto - qty;
+            let cartItem = new CartModel(itemId,itemDesc,price,qty,subTotal)
+            cartItems.push(cartItem)
+            loadTable()
+            clearCart()
         }
-    })
-    itemToReduce.qto = itemToReduce.qto - qty;
-    console.log(itemToReduce.qto);
-    loadItemTable()
+        loadItemTable()
+    }
 
 })
 
@@ -151,7 +164,6 @@ $("#btn-cart-item-delete").on('click',()=>{
         }
     })
     itemInc.qto = itemInc.qto + parseInt($("#order-item-qty").val())
-    console.log(itemInc.qto)
     cartItems.splice(clickedIndex,1);
     loadItemTable()
     clearCart()
@@ -245,8 +257,10 @@ $("#order-finished").on('click',()=>{
     cartItems.forEach( item=> {
          total = total + parseInt(item.totalPrice)
     })
-    $("#order-total").val(total)
-    $("#order-full-total").val(total-((total/100)*5))
+    $("#order-total").val(total);
+    subTotal = total-((total/100)*5);
+    $("#order-full-total").val(subTotal);
+
 })
 $("#buy-order").on('click',()=>{
     let id = $("#orderId").val()
@@ -257,18 +271,32 @@ $("#buy-order").on('click',()=>{
     let discount  = "5%"
     let subTotal = $("#order-full-total").val()
 
-    let order = new OrderModel(id,custId,date,custName,total,discount,subTotal)
-    orders.push(order);
-    let orderDetail = new OrderDetailModel(order,cartItems);
-    orderDetails.push(orderDetail)
+    if (id === "" || custId === "" || total === "" || discount === "" || subTotal ==="" ){
+        alert("Empty Order!")
+        $("#orderId").val("")
+        $("#order-cust-id").val("")
+        $("#order-date").val("")
+        $("#order-cust-name").val("")
+        $("#order-total").val("")
+        $("#order-full-total").val("")
+        $("#customer-cash").val("")
+        $("#customer-bal").val("");
+    }
+    else {
+        let order = new OrderModel(id,custId,date,custName,total,discount,subTotal)
+        orders.push(order);
+        let orderDetail = new OrderDetailModel(order,cartItems);
+        orderDetails.push(orderDetail)
+        $("#customer-bal").val(parseInt($("#customer-cash").val())-subTotal);
 
-    $("#orderId").val("")
-    $("#order-cust-id").val("")
-    $("#order-date").val("")
-    $("#order-cust-name").val("")
-    $("#order-total").val("")
-    $("#order-full-total").val("")
+        $("#orderId").val("")
+        $("#order-cust-id").val("")
+        $("#order-date").val("")
+        $("#order-cust-name").val("")
+        $("#order-total").val("")
+        $("#order-full-total").val("")
+        $("#customer-cash").val("")
 
-    $("#order-item-tbody").append().empty()
-
+        $("#order-item-tbody").append().empty()
+    }
 })
