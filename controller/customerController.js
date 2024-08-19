@@ -6,7 +6,6 @@ import {RegexValidator} from "../validation/RegexValidator.js";
 let clickedIndex;
 let idCounter = 1
 $("#btnCustomerAdd").on('click',()=>{
-    let custId = getCustId()
     let custName = $("#custName").val()
     let custAddress = $("#custAddress").val()
     let custPhone = $("#custPhone").val()
@@ -15,10 +14,34 @@ $("#btnCustomerAdd").on('click',()=>{
 
     const validationResult = validator.validateCustomer(custName, custAddress, custPhone);
     if (validationResult.isValid){
-        let customer = new CustomerModel(custId(),custName,custAddress,custPhone)
-        customers.push(customer)
+        const customerData = {
+            customerName : custName,
+            customerAddress : custAddress,
+            customerPhone : custPhone
+        };
+        const customerJson = JSON.stringify(customerData);
+        const http = new XMLHttpRequest();
+        http.onreadystatechange = () =>{
+            if (http.readyState === 4 ){
+                if (http.status === 200){
+                    var JsonTypeResponse = JSON.stringify(http.responseText);
+                    console.log(JsonTypeResponse);
+                }
+                else {
+                    console.error(http.status);
+                    console.error(http.readyState);
+                    console.error("FAILED REQUEST ");
+                }
+            }
+            else{
+                console.error(http.readyState.toString())
+            }
+        };
+        http.open("POST","http://localhost:8080/POS-Backend/customer");
+        http.setRequestHeader("content-type","application/json");
+        http.send(customerJson);
         clearCustomer()
-        loadTable()
+        // loadTable()
     }
     else {
         alert('Invalid customer data. Please check the input fields.');
@@ -33,18 +56,8 @@ $("#btnCustomerAdd").on('click',()=>{
         }
     }
 
-
-
-
 })
-function  getCustId(){
-    return function (){
-        let custId = String(idCounter).padStart(3,'0')
-        let id = "C"+custId;
-        idCounter++
-        return id;
-    }
-}
+
 function clearCustomer() {
     $("#custName").val("")
     $("#custAddress").val("")
