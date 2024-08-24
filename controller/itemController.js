@@ -3,28 +3,50 @@ import {ItemModel} from "../model/itemModel.js";
 import {RegexValidator} from "../validation/RegexValidator.js";
 
 
-
 let clickedIndex;
-$("#btnAddItem").on('click',()=>{
+$(document).ready(function (){
+    loadItemTable()
+})
+$("#btnAddItem").on('click', () => {
 
-    let itemId =$("#item-id").val();
     let itemName = $("#item-name").val()
-    let author = $("#item-author").val()
-    let qto = $("#qto").val()
-    let price  = $("#item-price").val()
+    let itemauthor = $("#item-author").val()
+    let itemqto = $("#qto").val()
+    let price = $("#item-price").val()
 
     let validator = new RegexValidator();
 
-    const validationResult = validator.validateItem(itemId, itemName, author, qto, price);
+    const validationResult = validator.validateItem(itemName, itemauthor, itemqto, price);
 
-    if (validationResult.isValid){
-        let item = new ItemModel(itemId,itemName,author,qto,price)
-        items.push(item)
+    if (validationResult.isValid) {
+        const itemData = {
+            itemName: itemName,
+            qto: itemqto,
+            author: itemauthor,
+            price: price
 
-        loadItemTable()
-        clearItem()
-    }
-    else {
+        }
+        const itemJson = JSON.stringify(itemData);
+        const http = new XMLHttpRequest();
+        http.onreadystatechange = () => {
+            if (http.readyState === 4) {
+                if (http.status === 200) {
+                    var JsonTypeResponse = JSON.stringify(http.responseText);
+                    console.log(JsonTypeResponse)
+                } else {
+                    console.error(http.status)
+                    console.error(http.readyState)
+                    console.error("FAILED REQUEST")
+                }
+            } else {
+                console.error(http.readyState.toString())
+            }
+        }
+        http.open("POST", "http://localhost:8080/POS-Backend/item", true);
+        http.setRequestHeader("content-type", "application/json");
+        http.send(itemJson);
+
+    } else {
         alert('Invalid item data. Please check the input fields.');
         if (!validationResult.isItemIdValid) {
             alert('Invalid Item ID');
@@ -41,11 +63,12 @@ $("#btnAddItem").on('click',()=>{
         if (!validationResult.isPriceValid) {
             alert('Invalid Price');
         }
-        }
-
+    }
+    loadItemTable()
+    clearItem()
 })
+
 function clearItem() {
-    $("#item-id").val("")
     $("#item-name").val("")
     $("#item-author").val("")
     $("#qto").val("")
@@ -57,25 +80,38 @@ function clearItem() {
     $("#qto-up").val("")
     $("#item-price-up").val("")
 }
-export function loadItemTable(){
-    $("#item-table-tbody").append().empty()
 
-    items.map((item,index)=>{
-        var record =
-            `<tr>
-        <td class="item-code">${item.itemCode}</td>
-        <td class = "item-desc">${item.desc}</td>
-        <td class = "item-author">${item.author}</td>
-        <td class = "item-qto">${item.qto}</td>
-        <td class = "item-price">${item.price}</td>
-            </tr>`
+export function loadItemTable() {
 
-        $("#item-table-tbody").append(record);
+    const http = new XMLHttpRequest();
+    http.open('GET','http://localhost:8080/POS-Backend/item',true);
+    http.setRequestHeader("Request-Type","table")
+    http.onreadystatechange = function(){
+        if (http.readyState === 4 && http.status ===200){
+            var items = JSON.parse(http.responseText);
 
-    })
+            $("#item-table-tbody").empty();
+
+            items.forEach(item =>{
+                $("#item-table-tbody").append(
+                    `<tr>
+                        <td class="item-code">${item.itemCode}</td>
+                        <td class = "item-desc">${item.itemName}</td>
+                        <td class = "item-author">${item.author}</td>
+                        <td class = "item-qto">${item.qto}</td>
+                        <td class = "item-price">${item.price}</td>
+                     </tr>`
+                );
+
+            })
+
+        }
+    }
+    http.send();
 
 }
-$("#item-table-tbody").on('click','tr',function (){
+
+$("#item-table-tbody").on('click', 'tr', function () {
 
     let index = $(this).index();
     clickedIndex = index;
@@ -96,7 +132,7 @@ $("#item-table-tbody").on('click','tr',function (){
     $("#item-price-up").val(price);
 
 })
-$("#update-item-btn").on('click',()=>{
+$("#update-item-btn").on('click', () => {
 
     let itemIdUpdated = $("#item-id-up").val();
     let descUpdated = $("#item-name-up").val();
@@ -106,7 +142,7 @@ $("#update-item-btn").on('click',()=>{
 
     let itemObject = items[clickedIndex];
 
-    itemObject.itemCode =itemIdUpdated
+    itemObject.itemCode = itemIdUpdated
     itemObject.desc = descUpdated
     itemObject.author = authorUpdated
     itemObject.qto = qtoUpdated
@@ -115,8 +151,8 @@ $("#update-item-btn").on('click',()=>{
     clearItem()
     loadItemTable()
 })
-$("#delete-item-btn").on('click',()=>{
-    items.splice(clickedIndex,1)
+$("#delete-item-btn").on('click', () => {
+    items.splice(clickedIndex, 1)
     loadItemTable()
     clearItem()
 })
@@ -183,7 +219,8 @@ function updateSuggestions(suggestions) {
         suggestionsList.append(`<li>${suggestion}</li>`);
     });
 }
-$("#item-searchBar").on('input', function() {
+
+$("#item-searchBar").on('input', function () {
     const input = $(this).val();
     const suggestions = suggestNames(input);
 

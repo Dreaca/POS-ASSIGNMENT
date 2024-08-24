@@ -31,10 +31,6 @@ export class RegexValidator {
             isValid: this.validateName(name) && this.validateAddress(address) && this.validatePhone(phone)
         };
     }
-    // Item validation methods
-    validateItemId(itemId) {
-        return this.itemIdRegex.test(itemId);
-    }
 
     validateItemName(itemName) {
         return this.itemNameRegex.test(itemName);
@@ -52,14 +48,13 @@ export class RegexValidator {
         return this.priceRegex.test(price);
     }
 
-    validateItem(itemId, itemName, author, qto, price) {
+    validateItem(itemName, author, qto, price) {
         return {
-            isItemIdValid: this.validateItemId(itemId),
             isItemNameValid: this.validateItemName(itemName),
             isAuthorValid: this.validateAuthor(author),
             isQtoValid: this.validateQto(qto),
             isPriceValid: this.validatePrice(price),
-            isValid: this.validateItemId(itemId) && this.validateItemName(itemName) && this.validateAuthor(author) && this.validateQto(qto) && this.validatePrice(price)
+            isValid:this.validateItemName(itemName) && this.validateAuthor(author) && this.validateQto(qto) && this.validatePrice(price)
         };
     }
 }

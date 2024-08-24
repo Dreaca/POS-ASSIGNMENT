@@ -2,7 +2,7 @@ import {cartItems, items, orderItems, customers, orders, orderDetails} from "../
 import {OrderModel} from "../model/orderModel.js";
 
 import {CartModel} from "../model/cartModel.js";
-import {loadItemTable} from "./itemController.js";
+// import {loadItemTable} from "./itemController.js";
 import {OrderDetailModel} from "../model/orderDetailModel.js";
 
 let displayCart = [];
