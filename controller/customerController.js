@@ -30,6 +30,8 @@ $("#btnCustomerAdd").on('click', () => {
                 if (http.status === 200) {
                     var JsonTypeResponse = JSON.stringify(http.responseText);
                     console.log(JsonTypeResponse);
+
+
                 } else {
                     console.error(http.status);
                     console.error(http.readyState);
@@ -42,8 +44,7 @@ $("#btnCustomerAdd").on('click', () => {
         http.open("POST", "http://localhost:8080/POS-Backend/customer",true);
         http.setRequestHeader("content-type", "application/json");
         http.send(customerJson);
-        clearCustomer()
-        loadTable()
+
     } else {
         alert('Invalid customer data. Please check the input fields.');
         if (!validationResult.isNameValid) {
@@ -56,6 +57,8 @@ $("#btnCustomerAdd").on('click', () => {
             alert('Invalid Phone');
         }
     }
+    clearCustomer()
+    loadTable()
 
 })
 
@@ -82,10 +85,10 @@ function loadTable() {
             customers.forEach(customer => {
                 $("#cust-table-tbody").append(`
                     <tr>
-                        <td>${customer.customerId}</td>
-                        <td>${customer.customerName}</td>
-                        <td>${customer.customerAddress}</td>
-                        <td>${customer.customerPhone}</td>
+                        <td class="customerId">${customer.customerId}</td>
+                        <td class="customerName">${customer.customerName}</td>
+                        <td class="customerAddress">${customer.customerAddress}</td>
+                        <td class="customerPhone">${customer.customerPhone}</td>
                     </tr>
                 `);
             });
@@ -100,13 +103,13 @@ $("#cust-table-tbody").on('click', 'tr', function () {
 
     let index = $(this).index();
 
-    clickedIndex = index;
 
+    let custId = $(this).find(".customerId").text()
+    let custName = $(this).find(".customerName").text()
+    let custAddress = $(this).find(".customerAddress").text()
+    let custPhone = $(this).find(".customerPhone").text()
 
-    let custId = $(this).find(".custId").text()
-    let custName = $(this).find(".custName").text()
-    let custAddress = $(this).find(".custAddress").text()
-    let custPhone = $(this).find(".custPhone").text()
+    console.log("id"+custId,"name"+custName,"address"+custAddress,"phone"+custPhone)
 
 
     $("#updateCustBtn").click()
@@ -117,76 +120,143 @@ $("#cust-table-tbody").on('click', 'tr', function () {
 
 })
 $("#btnUpdateCustomer-modal").on('click', () => {
+    let validator = new RegexValidator();
 
     let custIdUpdated = $("#customerIdUp").text();
     let custNameUpdated = $("#customerNameUp").val();
     let custAddressUpdated = $("#customerAddressUp").val();
     let custPhoneUpdated = $("#customerPhoneUp").val();
 
+    const validationResult = validator.validateCustomer(custNameUpdated, custAddressUpdated, custPhoneUpdated);
+    if (validationResult.isValid) {
+        const customerData = {
+            customerId : custIdUpdated,
+            customerName: custNameUpdated,
+            customerAddress: custAddressUpdated,
+            customerPhone: custPhoneUpdated
+        };
+        const customerJson = JSON.stringify(customerData);
+        const http = new XMLHttpRequest();
+        http.onreadystatechange = () => {
+            if (http.readyState === 4) {
+                if (http.status === 200) {
+                    var JsonTypeResponse = JSON.stringify(http.responseText);
+                    console.log(JsonTypeResponse);
+                    clearCustomer()
+                    loadTable()
+                } else {
+                    console.error(http.status);
+                    console.error(http.readyState);
+                    console.error("FAILED REQUEST ");
+                }
+            } else {
+                console.error(http.readyState.toString())
+            }
+        };
+        http.open("PUT", "http://localhost:8080/POS-Backend/customer?customerId="+custIdUpdated,true);
+        http.setRequestHeader("content-type", "application/json");
+        http.send(customerJson);
 
-    let customerObject = customers[clickedIndex];
-
-    customerObject.custId = custIdUpdated
-    customerObject.custName = custNameUpdated
-    customerObject.custAddress = custAddressUpdated
-    customerObject.custPhone = custPhoneUpdated
-
-    clearCustomer()
-    loadTable()
+    } else {
+        alert('Invalid customer data. Please check the input fields.');
+        if (!validationResult.isNameValid) {
+            alert('Invalid Name');
+        }
+        if (!validationResult.isAddressValid) {
+            alert('Invalid Address');
+        }
+        if (!validationResult.isPhoneValid) {
+            alert('Invalid Phone');
+        }
+    }
 })
 $("#btnDeleteCustomer-modal").on('click', () => {
-    customers.splice(clickedIndex, 1)
-    loadTable()
-    clearCustomer()
+
+    let custIdtoBeDeleted = $("#customerIdUp").text();
+    const http = new XMLHttpRequest();
+    http.onreadystatechange = () => {
+        if (http.readyState === 4) {
+            if (http.status === 200) {
+                var JsonTypeResponse = JSON.stringify(http.responseText);
+                console.log(JsonTypeResponse);
+                loadTable()
+                clearCustomer()
+            } else {
+                console.error(http.status);
+                console.error(http.readyState);
+                console.error("FAILED REQUEST ");
+            }
+        } else {
+            console.error(http.readyState.toString())
+        }
+    };
+    http.open("Delete", "http://localhost:8080/POS-Backend/customer?customerId="+custIdtoBeDeleted,true);
+    http.send();
+
 })
 
 $("#searchButton").on('click', () => {
     const searchQuery = $("#searchBar").val().trim().toLowerCase();
-    const searchResults = [];
 
+    const http = new XMLHttpRequest();
+    http.onreadystatechange = () => {
+        if (http.readyState === 4) {
+            if (http.status === 200) {
+                // Parse the JSON response from the server
+                const searchResults = JSON.parse(http.responseText);
 
-    customers.forEach(customer => {
-        if (
-            customer.custId.toLowerCase() === searchQuery ||
-            customer.custName.toLowerCase().includes(searchQuery) ||
-            customer.custAddress.toLowerCase().includes(searchQuery) ||
-            customer.custPhone.toLowerCase() === searchQuery
-        ) {
-            searchResults.push(customer);
+                // Clear the table before appending new results
+                $("#cust-table-tbody").empty();
+
+                // Append search results to the table
+                searchResults.forEach(customer => {
+                    $("#cust-table-tbody").append(`
+                        <tr>
+                            <td class = "customerId">${customer.customerId}</td>
+                            <td class="customerName">${customer.customerName}</td>
+                            <td class="customerAddress">${customer.customerAddress}</td>
+                            <td class="customerPhone">${customer.customerPhone}</td>
+                        </tr>
+                    `);
+                });
+
+                // If no results found
+                if (searchResults.length === 0) {
+                    $("#cust-table-tbody").html("<tr><td colspan='4'>No matching customers found.</td></tr>");
+                }
+            } else {
+                console.error("Failed to retrieve search results");
+            }
         }
-    });
+    };
 
-    $("#cust-table-tbody").empty();
-
-
-    searchResults.forEach(customer => {
-        $("#cust-table tbody").append(`
-            <tr>
-                <td>${customer.custId}</td>
-                <td>${customer.custName}</td>
-                <td>${customer.custAddress}</td>
-                <td>${customer.custPhone}</td>
-            </tr>
-        `);
-    });
-
-
-    if (searchResults.length === 0) {
-        $("#cust-table-tbody").html("<tr><td colspan='4'>No matching customers found.</td></tr>");
-    }
+    // Open a GET request to the server with the search query as a parameter
+    http.open("GET", "http://localhost:8080/POS-Backend/customer?query="+searchQuery, true);
+    http.setRequestHeader("Request-Type","search")
+    http.send();
 });
 
-function suggestNames(input) {
-    const suggestions = [];
+
+function suggestNames(input,callback) {
     const inputText = input.toLowerCase().trim();
 
+    const http = new XMLHttpRequest();
 
-    customers.forEach(customer => {
-        if (customer.custName.toLowerCase().startsWith(inputText)) {
-            suggestions.push(customer.custName);
+    http.onreadystatechange = () => {
+        if (http.readyState === 4) {
+            if (http.status === 200) {
+
+                const suggestions = JSON.parse(http.responseText);
+                 callback(suggestions)
+
+            } else {
+                console.error("Failed to retrieve name suggestions");
+            }
         }
-    });
-
+    };
+    http.open("GET", "http://localhost:8080/POS-Backend/customer?query="+inputText, true);
+    http.setRequestHeader("Request-Type","suggest");
+    http.send();
     return suggestions;
 }
 
@@ -203,13 +273,13 @@ function updateSuggestions(suggestions) {
 
 $("#searchBar").on('input', function () {
     const input = $(this).val();
-    const suggestions = suggestNames(input);
+    suggestNames(input,function (suggestions){
+        updateSuggestions(suggestions);
 
-    updateSuggestions(suggestions);
-
-    if (input.trim() === '') {
-        $("#suggestions").hide();
-    } else {
-        $("#suggestions").show();
-    }
+        if (input.trim() === '') {
+            $("#suggestions").hide();
+        } else {
+            $("#suggestions").show();
+        }
+    });
 });
