@@ -1,11 +1,15 @@
 import {customers} from "../db/db.js";
-import  {CustomerModel} from "../model/customerModel.js";
+import {CustomerModel} from "../model/customerModel.js";
 import {RegexValidator} from "../validation/RegexValidator.js";
 
 
 let clickedIndex;
-let idCounter = 1
-$("#btnCustomerAdd").on('click',()=>{
+let idCounter = 1;
+$(document).ready(function () {
+    loadTable();
+});
+
+$("#btnCustomerAdd").on('click', () => {
     let custName = $("#custName").val()
     let custAddress = $("#custAddress").val()
     let custPhone = $("#custPhone").val()
@@ -13,37 +17,34 @@ $("#btnCustomerAdd").on('click',()=>{
     let validator = new RegexValidator();
 
     const validationResult = validator.validateCustomer(custName, custAddress, custPhone);
-    if (validationResult.isValid){
+    if (validationResult.isValid) {
         const customerData = {
-            customerName : custName,
-            customerAddress : custAddress,
-            customerPhone : custPhone
+            customerName: custName,
+            customerAddress: custAddress,
+            customerPhone: custPhone
         };
         const customerJson = JSON.stringify(customerData);
         const http = new XMLHttpRequest();
-        http.onreadystatechange = () =>{
-            if (http.readyState === 4 ){
-                if (http.status === 200){
+        http.onreadystatechange = () => {
+            if (http.readyState === 4) {
+                if (http.status === 200) {
                     var JsonTypeResponse = JSON.stringify(http.responseText);
                     console.log(JsonTypeResponse);
-                }
-                else {
+                } else {
                     console.error(http.status);
                     console.error(http.readyState);
                     console.error("FAILED REQUEST ");
                 }
-            }
-            else{
+            } else {
                 console.error(http.readyState.toString())
             }
         };
-        http.open("POST","http://localhost:8080/POS-Backend/customer");
-        http.setRequestHeader("content-type","application/json");
+        http.open("POST", "http://localhost:8080/POS-Backend/customer",true);
+        http.setRequestHeader("content-type", "application/json");
         http.send(customerJson);
         clearCustomer()
-        // loadTable()
-    }
-    else {
+        loadTable()
+    } else {
         alert('Invalid customer data. Please check the input fields.');
         if (!validationResult.isNameValid) {
             alert('Invalid Name');
@@ -68,21 +69,34 @@ function clearCustomer() {
     $("#customerAddressUp").val("");
     $("#customerPhoneUp").val("");
 }
-function loadTable(){
-    $("#cust-table-tbody").append().empty()
-    customers.map((item,index)=>{
-        var record =
-            `<tr>
-        <td class="custId">${item.custId}</td>
-        <td class = "custName">${item.custName}</td>
-        <td class = "custAddress">${item.custAddress}</td>
-        <td class = "custPhone">${item.custPhone}</td>
-            </tr>`
-        $("#cust-table-tbody").append(record);
-    })
 
+function loadTable() {
+    const http = new XMLHttpRequest();
+    http.open('GET', 'http://localhost:8080/POS-Backend/customer', true);
+    http.setRequestHeader('request-type', 'table');
+
+    http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+            var customers = JSON.parse(http.responseText);
+            $("#cust-table-tbody").empty();
+            customers.forEach(customer => {
+                $("#cust-table-tbody").append(`
+                    <tr>
+                        <td>${customer.customerId}</td>
+                        <td>${customer.customerName}</td>
+                        <td>${customer.customerAddress}</td>
+                        <td>${customer.customerPhone}</td>
+                    </tr>
+                `);
+            });
+        }
+    };
+
+    http.send();
 }
-$("#cust-table-tbody").on('click','tr',function (){
+
+
+$("#cust-table-tbody").on('click', 'tr', function () {
 
     let index = $(this).index();
 
@@ -102,7 +116,7 @@ $("#cust-table-tbody").on('click','tr',function (){
     $("#customerPhoneUp").val(custPhone);
 
 })
-$("#btnUpdateCustomer-modal").on('click',()=>{
+$("#btnUpdateCustomer-modal").on('click', () => {
 
     let custIdUpdated = $("#customerIdUp").text();
     let custNameUpdated = $("#customerNameUp").val();
@@ -112,7 +126,7 @@ $("#btnUpdateCustomer-modal").on('click',()=>{
 
     let customerObject = customers[clickedIndex];
 
-    customerObject.custId =custIdUpdated
+    customerObject.custId = custIdUpdated
     customerObject.custName = custNameUpdated
     customerObject.custAddress = custAddressUpdated
     customerObject.custPhone = custPhoneUpdated
@@ -120,8 +134,8 @@ $("#btnUpdateCustomer-modal").on('click',()=>{
     clearCustomer()
     loadTable()
 })
-$("#btnDeleteCustomer-modal").on('click',()=>{
-    customers.splice(clickedIndex,1)
+$("#btnDeleteCustomer-modal").on('click', () => {
+    customers.splice(clickedIndex, 1)
     loadTable()
     clearCustomer()
 })
@@ -186,7 +200,8 @@ function updateSuggestions(suggestions) {
         suggestionsList.append(`<li>${suggestion}</li>`);
     });
 }
-$("#searchBar").on('input', function() {
+
+$("#searchBar").on('input', function () {
     const input = $(this).val();
     const suggestions = suggestNames(input);
 
