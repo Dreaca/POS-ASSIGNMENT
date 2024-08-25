@@ -1,5 +1,4 @@
-import {customers} from "../db/db.js";
-import {CustomerModel} from "../model/customerModel.js";
+
 import {RegexValidator} from "../validation/RegexValidator.js";
 
 
@@ -202,7 +201,7 @@ $("#searchButton").on('click', () => {
     http.onreadystatechange = () => {
         if (http.readyState === 4) {
             if (http.status === 200) {
-                // Parse the JSON response from the server
+
                 const searchResults = JSON.parse(http.responseText);
 
                 // Clear the table before appending new results
@@ -229,8 +228,6 @@ $("#searchButton").on('click', () => {
             }
         }
     };
-
-    // Open a GET request to the server with the search query as a parameter
     http.open("GET", "http://localhost:8080/POS-Backend/customer?query="+searchQuery, true);
     http.setRequestHeader("Request-Type","search")
     http.send();

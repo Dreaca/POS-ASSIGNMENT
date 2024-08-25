@@ -1,8 +1,8 @@
-import {cartItems, items, orderItems, customers, orders, orderDetails} from "../db/db.js";
+
 import {OrderModel} from "../model/orderModel.js";
 
 import {CartModel} from "../model/cartModel.js";
-// import {loadItemTable} from "./itemController.js";
+import {loadItemTable} from "./itemController.js";
 import {OrderDetailModel} from "../model/orderDetailModel.js";
 
 let displayCart = [];
@@ -10,38 +10,58 @@ let clickedIndex;
 let orderIdCounter = 1;
 let subTotal;
 $(document).ready(function (){
-    $("#order-item-id").on('keypress',function (event){
+    $("#order-item-desc").on('keypress',function (event){
+
         if (event.which===13){
             event.preventDefault()
 
-            let itemCode = $("#order-item-id").val().trim().toLowerCase();
-            items.forEach(item =>{
-                if (item.itemCode.toLowerCase()===itemCode){
-                    $("#order-item-desc").val(item.desc)
-                    $("#order-item-price").val(item.price)
-                    $("#item-id-suggestions").hide();
+            let i = $("#order-item-desc").val().trim().toLowerCase();
+
+            const http = new XMLHttpRequest();
+            http.open('GET','http://localhost:8080/POS-Backend/item',true);
+            http.setRequestHeader("Request-Type","table")
+            http.onreadystatechange = function(){
+                if (http.readyState === 4 && http.status ===200){
+                    var items = JSON.parse(http.responseText);
+
+                    $("#item-table-tbody").empty();
+
+                    items.forEach(item =>{
+                        if (item.itemName.toLowerCase()===i){
+                            $("#order-item-id").val(item.itemCode)
+                            $("#order-item-price").val(item.price)
+                            $("#item-id-suggestions").hide();
+                        }
+                    })
                 }
-                else{
-                    alert('Invalid Item');
-                }
-            })
+            }
+            http.send();
+
         }
     })
 })
 $("#nav-orders").on('click',()=>{
     $("#order-date").val(new Date().toISOString().slice(0, 10));
 })
-function suggestItemIds(input) {
-    const suggestions = [];
+function suggestItemIds(input,callback) {
     const inputText = input.toLowerCase().trim();
 
+    const http = new XMLHttpRequest();
+    http.onreadystatechange = () => {
+        if (http.readyState === 4) {
+            if (http.status === 200) {
 
-    items.forEach(item => {
-        if (item.itemCode.toLowerCase().startsWith(inputText)) {
-            suggestions.push(item.itemCode + "-" + item.desc + "- QTO : "+item.qto);
+                const suggestions = JSON.parse(http.responseText);
+                callback(suggestions)
+
+            } else {
+                console.error("Failed to retrieve name suggestions");
+            }
         }
-    });
-
+    };
+    http.open("GET", "http://localhost:8080/POS-Backend/item?query="+inputText, true);
+    http.setRequestHeader("Request-Type","suggest");
+    http.send();
     return suggestions;
 }
 function updateSuggestions(suggestions) {
@@ -53,17 +73,19 @@ function updateSuggestions(suggestions) {
         suggestionsList.append(`<li>${suggestion}</li>`);
     });
 }
-$("#order-item-id").on('input', function() {
+$("#order-item-desc").on('input', function() {
     const input = $(this).val();
-    const suggestions = suggestItemIds(input);
+   suggestItemIds(input,function(suggestions){
+       updateSuggestions(suggestions);
 
-    updateSuggestions(suggestions);
+       if (input.trim() === '') {
+           $("#item-id-suggestions").hide();
+       } else {
+           $("#item-id-suggestions").show();
+       }
+   });
 
-    if (input.trim() === '') {
-        $("#item-id-suggestions").hide();
-    } else {
-        $("#item-id-suggestions").show();
-    }
+
 });
 $("#order-item-qty").on('input',()=>{
     $("#order-sub-total").val(

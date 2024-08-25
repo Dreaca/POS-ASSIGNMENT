@@ -1,5 +1,5 @@
-import {items} from "../db/db.js";
-import {ItemModel} from "../model/itemModel.js";
+
+
 import {RegexValidator} from "../validation/RegexValidator.js";
 
 
@@ -114,7 +114,7 @@ export function loadItemTable() {
 $("#item-table-tbody").on('click', 'tr', function () {
 
     let index = $(this).index();
-    clickedIndex = index;
+
 
     let itemId = $(this).find(".item-code").text()
     let desc = $(this).find(".item-desc").text()
@@ -135,77 +135,150 @@ $("#item-table-tbody").on('click', 'tr', function () {
 $("#update-item-btn").on('click', () => {
 
     let itemIdUpdated = $("#item-id-up").val();
-    let descUpdated = $("#item-name-up").val();
+    let nameUpdated = $("#item-name-up").val();
     let authorUpdated = $("#item-author-up").val();
     let qtoUpdated = $("#qto-up").val();
     let priceUpdated = $("#item-price-up").val();
 
-    let itemObject = items[clickedIndex];
 
-    itemObject.itemCode = itemIdUpdated
-    itemObject.desc = descUpdated
-    itemObject.author = authorUpdated
-    itemObject.qto = qtoUpdated
-    itemObject.price = priceUpdated
+    let validator = new RegexValidator();
+
+    const validationResult = validator.validateItem(nameUpdated, authorUpdated, qtoUpdated, priceUpdated);
+
+    if (validationResult.isValid) {
+        const itemData = {
+            itemCode : itemIdUpdated,
+            itemName: nameUpdated,
+            qto: qtoUpdated,
+            author: authorUpdated,
+            price: priceUpdated
+
+        }
+        const itemJson = JSON.stringify(itemData);
+        const http = new XMLHttpRequest();
+        http.onreadystatechange = () => {
+            if (http.readyState === 4) {
+                if (http.status === 200) {
+                    var JsonTypeResponse = JSON.stringify(http.responseText);
+                    console.log(JsonTypeResponse)
+                    loadItemTable()
+                    clearItem()
+                } else {
+                    console.error(http.status)
+                    console.error(http.readyState)
+                    console.error("FAILED REQUEST")
+                }
+            } else {
+                console.error(http.readyState.toString())
+            }
+        }
+        http.open("PUT", "http://localhost:8080/POS-Backend/item?itemCode="+itemIdUpdated, true);
+        http.setRequestHeader("content-type", "application/json");
+        http.send(itemJson);
+
+    } else {
+        alert('Invalid item data. Please check the input fields.');
+        if (!validationResult.isItemIdValid) {
+            alert('Invalid Item ID');
+        }
+        if (!validationResult.isItemNameValid) {
+            alert('Invalid Item Name');
+        }
+        if (!validationResult.isAuthorValid) {
+            alert('Invalid Author');
+        }
+        if (!validationResult.isQtoValid) {
+            alert('Invalid Quantity');
+        }
+        if (!validationResult.isPriceValid) {
+            alert('Invalid Price');
+        }
+    }
 
     clearItem()
     loadItemTable()
 })
 $("#delete-item-btn").on('click', () => {
-    items.splice(clickedIndex, 1)
-    loadItemTable()
-    clearItem()
+   let itemToBeDeleted = $("#item-id-up").val();
+   const http = new XMLHttpRequest();
+   http.onreadystatechange = ()=>{
+       if (http.readyState === 4 ){
+           if (http.status === 200){
+                var JsonTypeResponse = JSON.stringify(http.responseText);
+               console.log(JsonTypeResponse)
+               loadItemTable()
+               clearItem()
+           }
+           else{
+               console.error(http.status)
+               console.error(http.readyState)
+               console.error("FAILED REQUEST")
+           }
+       }
+       else {
+           console.error(http.readyState.toString())
+       }
+   };
+   http.open("Delete","http://localhost:8080/POS-Backend/item?itemCode="+itemToBeDeleted,true);
+   http.send()
+
 })
 
 $("#item-searchButton").on('click', () => {
     const searchQuery = $("#searchBar").val().trim().toLowerCase();
-    const searchResults = [];
+
+    const http = new XMLHttpRequest();
+    http.open('GET','http://localhost:8080/POS-Backend/item?query='+searchQuery,true);
+    http.setRequestHeader("Request-Type","search")
+
+    http.onreadystatechange = function(){
+        if (http.readyState === 4 && http.status ===200){
+            const searchResults = JSON.parse(http.responseText);
 
 
-    items.forEach(item => {
-        if (
-            item.itemCode.toLowerCase() === searchQuery ||
-            item.desc.toLowerCase().includes(searchQuery) ||
-            item.author.toLowerCase().includes(searchQuery) ||
-            item.qto.toLowerCase().includes(searchQuery) ||
-            item.price.toLowerCase() === searchQuery
-        ) {
-            searchResults.push(item);
+            $("#item-table-tbody").empty();
+
+            searchResults.forEach(item =>{
+                $("#item-table-tbody").append(
+                    `<tr>
+                        <td class="item-code">${item.itemCode}</td>
+                        <td class = "item-desc">${item.itemName}</td>
+                        <td class = "item-author">${item.author}</td>
+                        <td class = "item-qto">${item.qto}</td>
+                        <td class = "item-price">${item.price}</td>
+                     </tr>`
+                );
+
+            });
+            if (searchResults.length === 0) {
+                $("#item-table-tbody").html("<tr><td colspan='4'>No matching customers found.</td></tr>");
+            }
+
         }
-    });
-
-    $("#item-table-tbody").empty();
-
-
-    searchResults.forEach(item => {
-        $("#item-table tbody").append(`
-            <tr>
-                <td>${item.itemCode}</td>
-                <td>${item.desc}</td>
-                <td>${item.author}</td>
-                <td>${item.qto}</td>
-                <td>${item.price}</td>
-            </tr>
-        `);
-    });
-
-
-    if (searchResults.length === 0) {
-        $("#item-table-tbody").html("<tr><td colspan='4'>No matching customers found.</td></tr>");
     }
+
+    http.send();
 });
 
-function suggestNames(input) {
-    const suggestions = [];
+function suggestNames(input,callback) {
     const inputText = input.toLowerCase().trim();
 
+    const http = new XMLHttpRequest();
+    http.onreadystatechange = () => {
+        if (http.readyState === 4) {
+            if (http.status === 200) {
 
-    items.forEach(item => {
-        if (item.desc.toLowerCase().startsWith(inputText)) {
-            suggestions.push(item.desc);
+                const suggestions = JSON.parse(http.responseText);
+                callback(suggestions)
+
+            } else {
+                console.error("Failed to retrieve name suggestions");
+            }
         }
-    });
-
+    };
+    http.open("GET", "http://localhost:8080/POS-Backend/item?query="+inputText, true);
+    http.setRequestHeader("Request-Type","suggest");
+    http.send();
     return suggestions;
 }
 
@@ -222,13 +295,15 @@ function updateSuggestions(suggestions) {
 
 $("#item-searchBar").on('input', function () {
     const input = $(this).val();
-    const suggestions = suggestNames(input);
+    suggestNames(input,function (suggestions){
+        updateSuggestions(suggestions);
 
-    updateSuggestions(suggestions);
+        if (input.trim() === '') {
+            $("#item-suggestions").hide();
+        } else {
+            $("#item-suggestions").show();
+        }
+    });
 
-    if (input.trim() === '') {
-        $("#item-suggestions").hide();
-    } else {
-        $("#item-suggestions").show();
-    }
+
 });
