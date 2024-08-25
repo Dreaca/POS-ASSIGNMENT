@@ -7,44 +7,68 @@ $("#nav-order-details").on('click',()=>{
     loadODtable()
 })
 function loadODtable(){
-    $("#order-detail-tbody").append().empty()
 
-     orderDetails.map((order, index) =>{
-         var record = `
+    const http = new XMLHttpRequest();
+    http.open("GET","http://localhost:8080/POS-Backend/order",true);
+    http.setRequestHeader("Request-Type","table");
+
+    $("#order-detail-tbody").append().empty()
+    http.onreadystatechange = ()=>{
+        if (http.readyState === 4 && http.status === 200){
+            const orderT = JSON.parse(http.responseText)
+            orderT.forEach(order =>{
+                $("#order-detail-tbody").append(
+                `
          <tr>
-         <td class="order-detail-orderId">${order.OrderModel.orderId}</td>
-         <td class="order-detail-custName">${order.OrderModel.customerName}</td>
-         <td class="order-detail-date">${order.OrderModel.date}</td>
-         <td class="order-detail-total">${order.OrderModel.total}</td>
-         <td class="order-detail-discount">${order.OrderModel.discount}</td>
-         <td class="order-detail-subTotal">${order.OrderModel.subtotal}</td>
+         <td class="order-detail-orderId">${order.orderId}</td>
+         <td class="order-detail-custName">${order.customerName}</td>
+         <td class="order-detail-date">${order.date}</td>
+         <td class="order-detail-total">${order.total}</td>
+         <td class="order-detail-discount">${order.discount}</td>
+         <td class="order-detail-subTotal">${order.subtotal}</td>
             </tr>`
 
-         $("#order-detail-tbody").append(record)
-     })
+                )
+            })
+
+        }
+    }
+    http.send();
+
+
 }
 $("#order-detail-tbody").on('click', 'tr', function() {
-    let index = $(this).index();
-    let order = orderDetails[index];
-    populateItemList(order.ItemList);
+    let orderId = $(this).find(".order-detail-orderId").text()
+    console.log(orderId)
+    populateItemList(orderId);
     $('#listItems').modal('show');
+
 });
 
-function populateItemList(itemList) {
+function populateItemList(orderId) {
     let itemListBody = $("#itemList-body");
     itemListBody.empty();
 
-    itemList.forEach(item => {
-        let row = `
+    const http = new XMLHttpRequest();
+    http.open("GET","http://localhost:8080/POS-Backend/orderDetails?orderId="+orderId,true)
+    http.onreadystatechange = ()=>{
+        if (http.readyState === 4 && http.status === 200){
+            const itemList = JSON.parse(http.responseText);
+            itemList.forEach(item => {
+                let row = `
                 <tr>
-                    <td>${item.itemCode}</td>
-                    <td>${item.desc}</td>
+                    <td>${item.itemId}</td>
+                    <td>${item.customerId}</td>
                     <td>${item.unitPrice}</td>
                     <td>${item.qty}</td>
                     <td>${item.unitPrice * item.qty}</td>
                 </tr>
             `;
-        itemListBody.append(row);
-    });
+                itemListBody.append(row);
+            });
+
+        }
+    }
+    http.send()
 }
 

@@ -328,6 +328,7 @@ $("#buy-order").on('click',()=>{
         const sendOrder={
             orderId : id,
             customerId :custId,
+            customerName : custName,
             date : date,
             total: total,
             discount:discount,
@@ -355,7 +356,7 @@ $("#buy-order").on('click',()=>{
         $("#customer-bal").val(parseInt($("#customer-cash").val())-subTotal);
         clearOrder()
 
-        $("#order-item-tbody").append().empty()
+        $("#order-item-tbody").empty()
     }
 })
 function clearOrder(){
