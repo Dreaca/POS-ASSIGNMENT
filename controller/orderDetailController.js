@@ -1,7 +1,8 @@
-import {orderDetails} from "../db/db.js";
+
 
 
 let clickedIndex;
+let orderId;
 
 $("#nav-order-details").on('click',()=>{
     loadODtable()
@@ -38,7 +39,7 @@ function loadODtable(){
 
 }
 $("#order-detail-tbody").on('click', 'tr', function() {
-    let orderId = $(this).find(".order-detail-orderId").text()
+    orderId = $(this).find(".order-detail-orderId").text()
     console.log(orderId)
     populateItemList(orderId);
     $('#listItems').modal('show');
@@ -71,4 +72,16 @@ function populateItemList(orderId) {
     }
     http.send()
 }
+$("#btnDeleteOrderDetail-modal").on('click',()=>{
+    const http = new XMLHttpRequest();
+    http.open("Delete","http://localhost:8080/POS-Backend/order?orderId="+orderId,true)
+    http.onreadystatechange = ()=>{
+        if (http.readyState === 4 && http.status === 200){
+            const response = JSON.stringify(http.responseText);
+            console.log(response)
+            $('#listItems').modal('close');
+        }
+    }
+    http.send()
+})
 
