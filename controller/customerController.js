@@ -40,7 +40,7 @@ $("#btnCustomerAdd").on('click', () => {
                 console.error(http.readyState.toString())
             }
         };
-        http.open("POST", "http://localhost:8080/POS-Backend/customer",true);
+        http.open("POST", "http://localhost:8080/posback/api/v3/customer",true);
         http.setRequestHeader("content-type", "application/json");
         http.send(customerJson);
 
@@ -74,7 +74,7 @@ function clearCustomer() {
 
 function loadTable() {
     const http = new XMLHttpRequest();
-    http.open('GET', 'http://localhost:8080/POS-Backend/customer', true);
+    http.open('GET', 'http://localhost:8080/posback/api/v3/customer', true);
     http.setRequestHeader('request-type', 'table');
 
     http.onreadystatechange = function () {
@@ -152,7 +152,7 @@ $("#btnUpdateCustomer-modal").on('click', () => {
                 console.error(http.readyState.toString())
             }
         };
-        http.open("PUT", "http://localhost:8080/POS-Backend/customer?customerId="+custIdUpdated,true);
+        http.open("PUT", "http://localhost:8080/posback/api/v3/customer/"+custIdUpdated,true);
         http.setRequestHeader("content-type", "application/json");
         http.send(customerJson);
 
@@ -189,7 +189,7 @@ $("#btnDeleteCustomer-modal").on('click', () => {
             console.error(http.readyState.toString())
         }
     };
-    http.open("Delete", "http://localhost:8080/POS-Backend/customer?customerId="+custIdtoBeDeleted,true);
+    http.open("Delete", "http://localhost:8080/posback/api/v3/customer/"+custIdtoBeDeleted,true);
     http.send();
 
 })
@@ -228,12 +228,11 @@ $("#searchButton").on('click', () => {
             }
         }
     };
-    http.open("GET", "http://localhost:8080/POS-Backend/customer?query="+searchQuery, true);
-    http.setRequestHeader("Request-Type","search")
+    http.open("GET", "http://localhost:8080/posback/api/v3/customer/"+searchQuery, true);
     http.send();
 });
 
-
+//TODO
 function suggestNames(input,callback) {
     const inputText = input.toLowerCase().trim();
 

@@ -42,7 +42,7 @@ $("#btnAddItem").on('click', () => {
                 console.error(http.readyState.toString())
             }
         }
-        http.open("POST", "http://localhost:8080/POS-Backend/item", true);
+        http.open("POST", "http://localhost:8080/posback/api/v3/item", true);
         http.setRequestHeader("content-type", "application/json");
         http.send(itemJson);
 
@@ -84,7 +84,7 @@ function clearItem() {
 export function loadItemTable() {
 
     const http = new XMLHttpRequest();
-    http.open('GET','http://localhost:8080/POS-Backend/item',true);
+    http.open('GET','http://localhost:8080/posback/api/v3/item',true);
     http.setRequestHeader("Request-Type","table")
     http.onreadystatechange = function(){
         if (http.readyState === 4 && http.status ===200){
@@ -172,7 +172,7 @@ $("#update-item-btn").on('click', () => {
                 console.error(http.readyState.toString())
             }
         }
-        http.open("PUT", "http://localhost:8080/POS-Backend/item?itemCode="+itemIdUpdated, true);
+        http.open("PUT", "http://localhost:8080/posback/api/v3/item/"+itemIdUpdated, true);
         http.setRequestHeader("content-type", "application/json");
         http.send(itemJson);
 
@@ -219,7 +219,7 @@ $("#delete-item-btn").on('click', () => {
            console.error(http.readyState.toString())
        }
    };
-   http.open("Delete","http://localhost:8080/POS-Backend/item?itemCode="+itemToBeDeleted,true);
+   http.open("Delete","http://localhost:8080/posback/api/v3/item/"+itemToBeDeleted,true);
    http.send()
 
 })
@@ -228,7 +228,7 @@ $("#item-searchButton").on('click', () => {
     const searchQuery = $("#searchBar").val().trim().toLowerCase();
 
     const http = new XMLHttpRequest();
-    http.open('GET','http://localhost:8080/POS-Backend/item?query='+searchQuery,true);
+    http.open('GET','http://localhost:8080/posback/api/v3/item/'+searchQuery,true);
     http.setRequestHeader("Request-Type","search")
 
     http.onreadystatechange = function(){

@@ -17,8 +17,7 @@ $(document).ready(function (){
             let i = $("#order-item-desc").val().trim().toLowerCase();
 
             const http = new XMLHttpRequest();
-            http.open('GET','http://localhost:8080/POS-Backend/item',true);
-            http.setRequestHeader("Request-Type","table")
+            http.open('GET','http://localhost:8080/posback/api/v3/item',true);
             http.onreadystatechange = function(){
                 if (http.readyState === 4 && http.status ===200){
                     var items = JSON.parse(http.responseText);
@@ -54,12 +53,12 @@ function suggestItemIds(input,callback) {
                 callback(suggestions)
 
             } else {
-                console.error("Failed to retrieve name suggestions");
+                console.error("Failed to retrieve name suggestions"+http.status);
             }
         }
     };
-    http.open("GET", "http://localhost:8080/POS-Backend/item?query="+inputText, true);
-    http.setRequestHeader("Request-Type","suggest");
+    http.open("GET", "http://localhost:8080/posback/api/v3/order/itemsuggest?query="+inputText, true);
+
     http.send();
     return suggestions;
 }
@@ -201,8 +200,8 @@ function  getOrderId(callback){
     return new Promise((resolve,reject)=>{
         const http = new XMLHttpRequest();
         var orderId;
-        http.open("GET","http://localhost:8080/POS-Backend/order",true)
-        http.setRequestHeader("Request-type","getOrderId");
+        http.open("GET","http://localhost:8080/posback/api/v3/order/orderId",true)
+
 
         http.onreadystatechange=()=>{
             if (http.readyState === 4 && http.status === 200){
@@ -222,8 +221,8 @@ $("#orderId").on('focus',()=>{
 $("#order-cust-name").on('blur', (event)=>{
         let custId = $("#order-cust-name").val().trim().toLowerCase();
     const http = new XMLHttpRequest();
-    http.open('GET','http://localhost:8080/POS-Backend/customer',true);
-    http.setRequestHeader("Request-Type","table")
+    http.open('GET','http://localhost:8080/posback/api/v3/customer',true);
+
     http.onreadystatechange = function(){
         if (http.readyState === 4 && http.status ===200){
 
@@ -258,8 +257,7 @@ function suggestCustomerNames(input,callback) {
             }
         }
     };
-    http.open("GET", "http://localhost:8080/POS-Backend/customer?query="+inputText, true);
-    http.setRequestHeader("Request-Type","suggest");
+    http.open("GET", "http://localhost:8080/posback/api/v3/order/customersuggest?query="+inputText, true);
     http.send();
     return suggestions;
 }
@@ -313,7 +311,7 @@ $("#buy-order").on('click',()=>{
     }
     else {
         const http = new XMLHttpRequest();
-        http.open("POST","http://localhost:8080/POS-Backend/order",true);
+        http.open("POST","http://localhost:8080/posback/api/v3/order",true);
         http.setRequestHeader("content-type","application/json");
 
         const outCart = cartItems.map(item=>({
