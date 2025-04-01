@@ -276,7 +276,7 @@ function suggestNames(input,callback) {
             }
         }
     };
-    http.open("GET", "http://localhost:8080/POS-Backend/item?query="+inputText, true);
+    http.open("GET", "http://localhost:8080/posback/item?query="+inputText, true);
     http.setRequestHeader("Request-Type","suggest");
     http.send();
     return suggestions;

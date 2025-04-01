@@ -10,7 +10,7 @@ $("#nav-order-details").on('click',()=>{
 function loadODtable(){
 
     const http = new XMLHttpRequest();
-    http.open("GET","http://localhost:8080/POS-Backend/order",true);
+    http.open("GET","http://localhost:8080/posback/api/v3/orderdetail",true);
     http.setRequestHeader("Request-Type","table");
 
     $("#order-detail-tbody").append().empty()
@@ -51,7 +51,7 @@ function populateItemList(orderId) {
     itemListBody.empty();
 
     const http = new XMLHttpRequest();
-    http.open("GET","http://localhost:8080/POS-Backend/orderDetails?orderId="+orderId,true)
+    http.open("GET","http://localhost:8080/posback/api/v3/orderDetails?orderId="+orderId,true)
     http.onreadystatechange = ()=>{
         if (http.readyState === 4 && http.status === 200){
             const itemList = JSON.parse(http.responseText);
@@ -74,7 +74,7 @@ function populateItemList(orderId) {
 }
 $("#btnDeleteOrderDetail-modal").on('click',()=>{
     const http = new XMLHttpRequest();
-    http.open("Delete","http://localhost:8080/POS-Backend/order?orderId="+orderId,true)
+    http.open("Delete","http://localhost:8080/posback/api/v3/order?orderId="+orderId,true)
     http.onreadystatechange = ()=>{
         if (http.readyState === 4 && http.status === 200){
             const response = JSON.stringify(http.responseText);
